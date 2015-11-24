@@ -3,7 +3,6 @@ module Nastran
 import Base: show
 
 using ImmutableArrays
-using CoordinateSystems
 
 export NastranDeck, GenericNastranDeck, NastranModel
 export CBEAM, CONM2, CELAS1, CQUADR, CTRIAR, CELAS2, RBE2, RBE3, CBUSH, CROD
