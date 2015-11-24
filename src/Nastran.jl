@@ -37,6 +37,7 @@ typealias CoordinateSystemCard NastranCard{CoordinateSystemCardType}
 typealias NastranDeck Vector{NastranCard}
 
 include("cards.jl")
+include("coords.jl")
 
 @generated function NastranCard{U}(u::Type{Val{U}},card)
     return :(convert($U,card))
