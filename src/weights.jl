@@ -1,10 +1,22 @@
-calc_masscg(card::CELAS1,model::NastranModel) = MassCG()
-calc_masscg(card::CELAS2,model::NastranModel) = MassCG()
-calc_masscg(card::CBUSH,model::NastranModel) = MassCG()
-calc_masscg(card::RBE2,model::NastranModel) = MassCG()
-calc_masscg(card::RBE3,model::NastranModel) = MassCG()
+immutable MassCG
+    mass::Float64
+    cg::Vector3{Float64}
+end
+MassCG() = MassCG(0.0,Vector3(0.0,0.0,0.0))
 
-function calc_masscg(card::CBEAM,model::NastranModel)
+function +(a::MassCG,b::MassCG)
+    mass = a.mass + b.mass
+    cg = (a.mass*a.cg + b.mass*b.cg)/(a.mass+b.mass)
+    MassCG(mass,cg)
+end
+
+MassCG(card::CELAS1,model::NastranModel) = MassCG()
+MassCG(card::CELAS2,model::NastranModel) = MassCG()
+MassCG(card::CBUSH,model::NastranModel) = MassCG()
+MassCG(card::RBE2,model::NastranModel) = MassCG()
+MassCG(card::RBE3,model::NastranModel) = MassCG()
+
+function MassCG(card::CBEAM,model::NastranModel)
     prop = model.properties[card.prop_id]
     mat = model.materials[prop.mat_id]
     if prop.nonstructural_mass != 0
@@ -15,7 +27,7 @@ function calc_masscg(card::CBEAM,model::NastranModel)
     end
     MassCG()
 end
-function calc_masscg(card::CROD,model::NastranModel)
+function MassCG(card::CROD,model::NastranModel)
     prop = model.properties[card.prop_id]
     mat = model.materials[prop.mat_id]
     if prop.nonstructural_mass != 0
@@ -26,7 +38,7 @@ function calc_masscg(card::CROD,model::NastranModel)
     end
     MassCG()
 end
-function calc_masscg(card::CTRIAR,model::NastranModel)
+function MassCG(card::CTRIAR,model::NastranModel)
     prop = model.properties[card.prop_id]
     mat = model.materials[prop.mat1_id]
     if prop.nonstructural_mass != 0
@@ -38,7 +50,7 @@ function calc_masscg(card::CTRIAR,model::NastranModel)
     MassCG()
 end
 
-function calc_masscg(card::CQUADR,model::NastranModel)
+function MassCG(card::CQUADR,model::NastranModel)
     prop = model.properties[card.prop_id]
     mat = model.materials[prop.mat1_id]
     if prop.nonstructural_mass != 0
@@ -49,7 +61,7 @@ function calc_masscg(card::CQUADR,model::NastranModel)
     end
     MassCG()
 end
-function calc_masscg(card::CONM2,model::NastranModel)
+function MassCG(card::CONM2,model::NastranModel)
     if card.csys_id == -1
         MassCG(card.mass,Vector3(card.x,card.y,card.z))
     else
@@ -65,14 +77,14 @@ function calc_masscg(card::CONM2,model::NastranModel)
     end
 end
 
-function calc_masscg(model::NastranModel)
+function MassCG(model::NastranModel)
     masscg = MassCG(0.0,Vector3(0.0,0.0,0.0))
     for card in values(model.elements)
-        masscg += calc_masscg(card,model)
+        masscg += MassCG(card,model)
     end
     masscg
 end
 
-calc_masscg(filename::AbstractString) = calc_masscg(NastranModel(filename))
-calc_masscg(filenames::Vector{AbstractString}) =
-    mapreduce(filename->calc_masscg(NastranModel(filename)),+,MassCG(),filenames)
+MassCG(filename::AbstractString) = MassCG(NastranModel(filename))
+MassCG(filenames::Vector{AbstractString}) =
+    mapreduce(filename->MassCG(NastranModel(filename)),+,MassCG(),filenames)
