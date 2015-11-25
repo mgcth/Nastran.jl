@@ -9,6 +9,8 @@ export CoordSet,get_coord,get_global_xyz
 export MassCG
 
 include("cards.jl")
+using .Cards
+
 include("deck.jl")
 
 include("coords.jl")

@@ -1,13 +1,5 @@
-typealias GenericCard Vector{Any}
 typealias GenericNastranDeck Vector{GenericCard}
 typealias NastranDeck Vector{NastranCard}
-
-@generated function NastranCard{U}(u::Type{Val{U}},card)
-    return :(convert($U,card))
-end
-function convert(::Type{NastranCard},card::GenericCard)
-    NastranCard(Val{symbol(card[1])},card)
-end
 
 function next_token(line::IOBuffer,N::Int64)
     token = ascii(readbytes(line,N))
