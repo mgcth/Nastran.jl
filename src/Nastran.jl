@@ -1,6 +1,6 @@
 module Nastran
 
-import Base: show
+import Base: show, +
 
 using ImmutableArrays
 
@@ -37,6 +37,7 @@ typealias NastranDeck Vector{NastranCard}
 
 include("cards.jl")
 include("coords.jl")
+include("masscg.jl")
 
 @generated function NastranCard{U}(u::Type{Val{U}},card)
     return :(convert($U,card))
@@ -342,5 +343,6 @@ function NastranModel(filename::AbstractString)
                  coordset)
 end
 
+include("weights.jl")
 
 end # module
