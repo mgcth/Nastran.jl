@@ -1,5 +1,3 @@
-using ImmutableArrays
-
 immutable CoordinateSystem
     center::Vector3{Float64}
     rotation_matrix::Matrix3x3
