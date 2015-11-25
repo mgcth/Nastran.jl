@@ -1,3 +1,7 @@
+typealias GenericCard Vector{Any}
+typealias GenericNastranDeck Vector{GenericCard}
+typealias NastranDeck Vector{NastranCard}
+
 @generated function NastranCard{U}(u::Type{Val{U}},card)
     return :(convert($U,card))
 end
