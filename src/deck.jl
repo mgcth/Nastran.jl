@@ -65,28 +65,18 @@ function remove_comments(line::AbstractString)
     end
 end
 
-function parse_float(field::ASCIIString)
-    field = replace(field,r"[dDE]","e")
-    i = searchindex(field[2:end-1],'+')
-    j = searchindex(field[2:end-1],'-')
-    if i > 0 && !(field[i] == 'e')
-        field = field[1:i] * "E" * field[i+1:end]
-    elseif j > 0 && !(field[j] == 'e')
-        field = field[1:j] * "E" * field[j+1:end]
-    end
-    parse(Float64,field)
-end
-
+isnastranfloat = r"^([+-]?[0-9]*(?:[0-9]\.|\.[0-9])[0-9]*)[dD]?([+-][0-9]+)$"
+isfloat = r"^([+-]?[0-9]*(?:[0-9]\.|\.[0-9])[0-9]*)(?:[eE]([+-][0-9]+))?$"
+isint = r"^(?:[+-][0-9]{1,7}|[0-9]{1,8})$"
 function parse_number(field::ASCIIString)
-    try
-        if '.' in field
-            parse_float(field::ASCIIString)
-        elseif length(field) < 9
-            parse(Int64,field)
-        else
-            field
-        end
-    catch
+    m = match(isnastranfloat,field)
+    if m != nothing
+        parse(Float64,join(m.captures,"e"))
+    elseif ismatch(isfloat,field)
+        parse(Float64,field)
+    elseif ismatch(isint,field)
+        parse(Int64,field)
+    else
         field
     end
 end
