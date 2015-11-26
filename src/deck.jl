@@ -101,42 +101,51 @@ function read_cards(filename::AbstractString)
     end
 end
 
-function merge_continuations(cards)
-    # active = Dict{ASCIIString,NastranGenericCard}()
-    last_card = nothing
-    for card in cards
+immutable NastranCardIterator
+    cards
+end
+
+Base.start(I::NastranCardIterator) = (nothing,start(I.cards))
+
+function Base.next(I::NastranCardIterator,state)
+    last_card, cards_state = state
+    while !done(I.cards,cards_state)
+        card, cards_state = next(I.cards,cards_state)
         if all(f -> f == "",card)
             if last_card != nothing
-                produce(last_card)
-                last_card = nothing
+                return (last_card,(nothing,cards_state))
             end
         elseif card[1] == "+" || card[1] == ""
             if last_card == nothing
                 error()
-            else
-                append!(last_card,card[2:end-1])
             end
+            append!(last_card,card[2:end-1])
         else
-            if last_card != nothing
-                produce(last_card)
-                last_card = nothing
+            if last_card == nothing
+                last_card = card[1:end-1]
+            else
+                return (last_card,(card[1:end-1],cards_state))
             end
-            last_card = card[1:end-1]
         end
     end
+    return (last_card,(nothing,cards_state))
 end
+Base.done(I::NastranCardIterator,state) = done(I.cards,state[2]) && state[1] == nothing
 
 function GenericNastranDeck(filename::AbstractString)
     cards = read_cards(filename)
-    t = @task merge_continuations(cards)
-    GenericNastranDeck(collect(t))
+    GenericNastranDeck(collect(NastranCardIterator(cards)))
 end
 
 function NastranDeck(filename::AbstractString)
     cards = read_cards(filename)
-    t = @task merge_continuations(cards)
-    m = map(t) do card
-        convert(NastranCard,card)
-    end
-    NastranDeck(m)
+    # for card in NastranCardIterator(cards)
+    #     @show card
+    # end
+    NastranDeck(collect(NastranCardIterator(cards)))
+    # m = map(NastranCardIterator(cards)) do card
+    #             card
+    #     # convert(NastranCard,card)
+    # end
+    # m
 end
