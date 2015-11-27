@@ -22,9 +22,9 @@ function next_token_comma(line::IOBuffer)
     end
 end
 
-function parse_line(line::AbstractString)
+function parse_line{T<:AbstractString}(line::T)
     buf = IOBuffer(line)
-    card = Any[]
+    card = T[]
     if ',' in line
         tok = next_token_comma(buf)
         if length(tok) > 0 && tok[end] == '*'
@@ -81,8 +81,8 @@ function parse_number(field::ASCIIString)
     end
 end
 
-function parse_numbers{U <: GenericCard}(card::U)
-    collect(map(parse_number,card))
+function parse_numbers(card::Vector{ASCIIString})
+    map(parse_number,card)
 end
 
 function read_cards(filename::AbstractString)
@@ -129,13 +129,5 @@ end
 
 function NastranDeck(filename::AbstractString)
     cards = read_cards(filename)
-    # for card in NastranCardIterator(cards)
-    #     @show card
-    # end
     NastranDeck(collect(NastranCardIterator(cards)))
-    # m = map(NastranCardIterator(cards)) do card
-    #             card
-    #     # convert(NastranCard,card)
-    # end
-    # m
 end
