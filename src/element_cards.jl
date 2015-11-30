@@ -103,6 +103,12 @@ type CONM2 <: ElementCard
     x::Float64
     y::Float64
     z::Float64
+    I11::Float64
+    I21::Float64
+    I22::Float64
+    I31::Float64
+    I32::Float64
+    I33::Float64
 end
 function convert(::Type{CONM2},card)
     id = card[2]::Int64
@@ -112,5 +118,14 @@ function convert(::Type{CONM2},card)
     x = card[6] == "" ? 0.0 : card[6]::Float64
     y = card[7] == "" ? 0.0 : card[7]::Float64
     z = card[8] == "" ? 0.0 : card[8]::Float64
-    CONM2(id,grid_id,csys_id,mass,x,y,z)
+    I11 = I21 = I22 = I31 = I32 = I33 = 0.0
+    if length(card) > 9
+        I11 = card[10] == "" ? 0.0 : card[10]::Float64
+        I21 = card[11] == "" ? 0.0 : card[11]::Float64
+        I22 = card[12] == "" ? 0.0 : card[12]::Float64
+        I31 = card[13] == "" ? 0.0 : card[13]::Float64
+        I32 = card[14] == "" ? 0.0 : card[14]::Float64
+        I33 = card[15] == "" ? 0.0 : card[15]::Float64
+    end
+    CONM2(id,grid_id,csys_id,mass,x,y,z,I11,I21,I22,I31,I32,I33)
 end

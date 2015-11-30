@@ -1,8 +1,10 @@
 immutable MassCG
     mass::Float64
     cg::XYZ
+    inertia::Mat3x3
 end
-MassCG() = MassCG(0.0,zero(XYZ))
+zero(::Type{MassCG}) = MassCG(0.0,zero(XYZ),zero(Mat3x3))
+MassCG() = zero(MassCG)
 
 function +(a::MassCG,b::MassCG)
     mass = a.mass + b.mass
@@ -11,7 +13,12 @@ function +(a::MassCG,b::MassCG)
     else
         cg = (a.mass*a.cg + b.mass*b.cg)/mass
     end
-    MassCG(mass,cg)
+    avec = cg - a.cg
+    aI = a.inertia + a.mass*(sumabs2(avec)*eye(Mat3x3) - avec*avec')
+    bvec = cg - b.cg
+    bI = b.inertia + b.mass*(sumabs2(bvec)*eye(Mat3x3) - bvec*bvec')
+    inertia = aI + bI
+    MassCG(mass,cg,inertia)
 end
 
 function -(a::MassCG,b::MassCG)
@@ -21,7 +28,11 @@ function -(a::MassCG,b::MassCG)
     else
         cg = (a.mass*a.cg - b.mass*b.cg)/mass
     end
-    MassCG(mass,cg)
+    aI = a.inertia + a.mass*(sumabs2(avec)*eye(Mat3x3) - avec*avec')
+    bvec = cg - b.cg
+    bI = b.inertia + b.mass*(sumabs2(bvec)*eye(Mat3x3) - bvec*bvec')
+    inertia = aI - bI
+    MassCG(mass,cg,inertia)
 end
 
 MassCG(card::CELAS1,model::NastranModel) = MassCG()
@@ -76,8 +87,13 @@ function MassCG(card::CQUADR,model::NastranModel)
     MassCG()
 end
 function MassCG(card::CONM2,model::NastranModel)
+    inertia = Mat3x3([
+                        card.I11 card.I21 card.I31;
+                        card.I21 card.I22 card.I32;
+                        card.I31 card.I32 card.I33;
+                        ])
     if card.csys_id == -1
-        MassCG(card.mass,XYZ(card.x,card.y,card.z))
+        MassCG(card.mass,XYZ(card.x,card.y,card.z),inertia)
     else
         vec = XYZ(card.x,card.y,card.z)
         grid = get_global_xyz(model.coordset,card.grid_id)
@@ -86,8 +102,9 @@ function MassCG(card::CONM2,model::NastranModel)
         else
             coord = get_coord(model.coordset,card.csys_id)
             loc = grid.xyz + rotate_to_global(coord.csys,vec)
+            inertia = rotate_to_global(coord.csys,inertia)
         end
-        MassCG(card.mass,loc)
+        MassCG(card.mass,loc,inertia)
     end
 end
 

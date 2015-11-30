@@ -6,7 +6,7 @@ using FixedSizeArrays
 
 export NastranDeck, GenericNastranDeck, NastranModel
 export CoordSet,get_coord,get_global_xyz
-export MassCG, XYZ
+export MassCG, XYZ, Mat3x3
 
 typealias XYZ Vec{3,Float64}
 typealias Mat3x3 Mat{3,3,Float64}
