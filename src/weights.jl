@@ -1,13 +1,13 @@
 immutable MassCG
     mass::Float64
-    cg::Vector3{Float64}
+    cg::XYZ
 end
-MassCG() = MassCG(0.0,Vector3(0.0,0.0,0.0))
+MassCG() = MassCG(0.0,zero(XYZ))
 
 function +(a::MassCG,b::MassCG)
     mass = a.mass + b.mass
     if mass == 0
-        cg = Vector3(0.0,0.0,0.0)
+        cg = zero(xyz)
     else
         cg = (a.mass*a.cg + b.mass*b.cg)/mass
     end
@@ -17,7 +17,7 @@ end
 function -(a::MassCG,b::MassCG)
     mass = a.mass - b.mass
     if mass == 0
-        cg = Vector3(0.0,0.0,0.0)
+        cg = zero(xyz)
     else
         cg = (a.mass*a.cg - b.mass*b.cg)/mass
     end
@@ -77,9 +77,9 @@ function MassCG(card::CQUADR,model::NastranModel)
 end
 function MassCG(card::CONM2,model::NastranModel)
     if card.csys_id == -1
-        MassCG(card.mass,Vector3(card.x,card.y,card.z))
+        MassCG(card.mass,XYZ(card.x,card.y,card.z))
     else
-        vec = Vector3(card.x,card.y,card.z)
+        vec = XYZ(card.x,card.y,card.z)
         grid = get_global_xyz(model.coordset,card.grid_id)
         if card.csys_id == 0
             loc = grid.xyz + vec

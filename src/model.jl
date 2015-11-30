@@ -7,7 +7,7 @@ end
 type Grid
     id::Int64
     csys_id::Int64
-    xyz::Vector3{Float64}
+    xyz::XYZ
 end
 
 type Coord
@@ -15,8 +15,8 @@ type Coord
     csys::CoordinateSystem
 end
 
-Grid(card::GRID) = Grid(card.id,card.csys_id,Vector3(card.x,card.y,card.z))
-Grid(card::SPOINT) = Grid(card.id,0,Vector3(0.0,0.0,0.0))
+Grid(card::GRID) = Grid(card.id,card.csys_id,XYZ(card.x,card.y,card.z))
+Grid(card::SPOINT) = Grid(card.id,0,zero(XYZ))
 
 immutable CoordSet
     coords::Vector{Coord}
@@ -60,9 +60,9 @@ end
 
 function CoordinateSystem(global_xyzs::Vector{Grid},card::CORD2R)
     if card.csys_id == 0
-        pA = Vector3(card.gridAx,card.gridAy,card.gridAz)
-        pB = Vector3(card.gridBx,card.gridBy,card.gridBz)
-        pC = Vector3(card.gridCx,card.gridCy,card.gridCz)
+        pA = XYZ(card.gridAx,card.gridAy,card.gridAz)
+        pB = XYZ(card.gridBx,card.gridBy,card.gridBz)
+        pC = XYZ(card.gridCx,card.gridCy,card.gridCz)
         Coord(card.id,CoordinateSystem(pA,pB,pC))
     else
         throw(MethodError("Not Implemented"))

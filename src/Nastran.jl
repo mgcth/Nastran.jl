@@ -1,12 +1,15 @@
 module Nastran
 
-import Base: show, +, -
+import Base: show, +, -, zero
 
-using ImmutableArrays
+using FixedSizeArrays
 
 export NastranDeck, GenericNastranDeck, NastranModel
 export CoordSet,get_coord,get_global_xyz
-export MassCG
+export MassCG, XYZ
+
+typealias XYZ Vec{3,Float64}
+typealias Mat3x3 Mat{3,3,Float64}
 
 include("cards.jl")
 using .Cards
