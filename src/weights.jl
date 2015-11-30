@@ -108,9 +108,7 @@ function MassCG(card::CONM2,model::NastranModel)
     end
 end
 
-MassCG(model::NastranModel) = mapreduce(card -> MassCG(card,model),
-                                        +,
-                                        values(model.elements))
+MassCG(model::NastranModel) = mapreduce(card -> MassCG(card,model), +, values(model.elements))
 
 MassCG(filename::AbstractString) = MassCG(NastranModel(filename))
 MassCG(filenames::Vector{AbstractString}) =
