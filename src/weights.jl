@@ -6,7 +6,21 @@ MassCG() = MassCG(0.0,Vector3(0.0,0.0,0.0))
 
 function +(a::MassCG,b::MassCG)
     mass = a.mass + b.mass
-    cg = (a.mass*a.cg + b.mass*b.cg)/(a.mass+b.mass)
+    if mass == 0
+        cg = Vector3(0.0,0.0,0.0)
+    else
+        cg = (a.mass*a.cg + b.mass*b.cg)/mass
+    end
+    MassCG(mass,cg)
+end
+
+function -(a::MassCG,b::MassCG)
+    mass = a.mass - b.mass
+    if mass == 0
+        cg = Vector3(0.0,0.0,0.0)
+    else
+        cg = (a.mass*a.cg - b.mass*b.cg)/mass
+    end
     MassCG(mass,cg)
 end
 

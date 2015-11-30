@@ -1,6 +1,6 @@
 module Nastran
 
-import Base: show, +
+import Base: show, +, -
 
 using ImmutableArrays
 
