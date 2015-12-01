@@ -6,6 +6,11 @@ end
 zero(::Type{MassCG}) = MassCG(0.0,zero(XYZ),zero(Mat3x3))
 MassCG() = zero(MassCG)
 
+function parallel_axis_inertia(mcg::MassCG,new_cg::XYZ)
+    vec = new_cg - mcg.cg
+    return mcg.inertia + mcg.mass*(sumabs2(vec)*eye(Mat3x3) - vec*vec')
+end
+
 function +(a::MassCG,b::MassCG)
     mass = a.mass + b.mass
     if mass == 0
@@ -13,11 +18,7 @@ function +(a::MassCG,b::MassCG)
     else
         cg = (a.mass*a.cg + b.mass*b.cg)/mass
     end
-    avec = cg - a.cg
-    aI = a.inertia + a.mass*(sumabs2(avec)*eye(Mat3x3) - avec*avec')
-    bvec = cg - b.cg
-    bI = b.inertia + b.mass*(sumabs2(bvec)*eye(Mat3x3) - bvec*bvec')
-    inertia = aI + bI
+    inertia = parallel_axis_inertia(a,cg) + parallel_axis_inertia(b,cg)
     MassCG(mass,cg,inertia)
 end
 
@@ -28,10 +29,7 @@ function -(a::MassCG,b::MassCG)
     else
         cg = (a.mass*a.cg - b.mass*b.cg)/mass
     end
-    aI = a.inertia + a.mass*(sumabs2(avec)*eye(Mat3x3) - avec*avec')
-    bvec = cg - b.cg
-    bI = b.inertia + b.mass*(sumabs2(bvec)*eye(Mat3x3) - bvec*bvec')
-    inertia = aI - bI
+    inertia = parallel_axis_inertia(a,cg) - parallel_axis_inertia(b,cg)
     MassCG(mass,cg,inertia)
 end
 
