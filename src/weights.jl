@@ -9,7 +9,7 @@ MassCG() = zero(MassCG)
 function +(a::MassCG,b::MassCG)
     mass = a.mass + b.mass
     if mass == 0
-        cg = zero(xyz)
+        cg = zero(XYZ)
     else
         cg = (a.mass*a.cg + b.mass*b.cg)/mass
     end
@@ -24,7 +24,7 @@ end
 function -(a::MassCG,b::MassCG)
     mass = a.mass - b.mass
     if mass == 0
-        cg = zero(xyz)
+        cg = zero(XYZ)
     else
         cg = (a.mass*a.cg - b.mass*b.cg)/mass
     end
