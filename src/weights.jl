@@ -96,13 +96,13 @@ function MassCG(card::CONM2,model::NastranModel)
         MassCG(card.mass,XYZ(card.x,card.y,card.z),inertia)
     else
         vec = XYZ(card.x,card.y,card.z)
-        grid = get_global_xyz(model.coordset,card.grid_id)
+        grid = get_global_xyz(model,card.grid_id)
         if card.csys_id == 0
-            loc = grid.xyz + vec
+            loc = grid + vec
         else
-            coord = get_coord(model.coordset,card.csys_id)
-            loc = grid.xyz + rotate_to_global(coord.csys,vec)
-            inertia = rotate_to_global(coord.csys,inertia)
+            csys = CoordinateSystem(model,card.csys_id)
+            loc = grid + rotate_to_global(csys,vec)
+            inertia = rotate_to_global(csys,inertia)
         end
         MassCG(card.mass,loc,inertia)
     end
