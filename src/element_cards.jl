@@ -129,3 +129,27 @@ function convert(::Type{CONM2},card)
     end
     CONM2(id,grid_id,csys_id,mass,x,y,z,I11,I21,I22,I31,I32,I33)
 end
+
+type CAERO1 <: ElementCard
+    id::Int64
+end
+function convert(::Type{CAERO1},card)
+    id = card[2]::Int64
+    CAERO1(id)
+end
+
+type SPLINE1 <: ElementCard
+    id::Int64
+end
+function convert(::Type{SPLINE1},card)
+    id = card[2]::Int64
+    SPLINE1(id)
+end
+
+type SPLINE2 <: ElementCard
+    id::Int64
+end
+function convert(::Type{SPLINE2},card)
+    id = card[2]::Int64
+    SPLINE2(id)
+end

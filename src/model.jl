@@ -184,6 +184,7 @@ function NastranModel(filename::AbstractString)
     property_cards = card_dict(PropertyCard,deck)
     material_cards = card_dict(MaterialCard,deck)
     constraint_cards = card_dict(ConstraintCard,deck)
+    set_cards = card_dict(SetCard,deck)
     coordinate_system_cards = card_dict(CoordinateSystemCard,deck)
     # coordset = CoordSet(grid_cards,coordinate_system_cards)
     NastranModel(grid_cards,
@@ -191,5 +192,6 @@ function NastranModel(filename::AbstractString)
                  property_cards,
                  material_cards,
                  constraint_cards,
-                 coordinate_system_cards)
+                 coordinate_system_cards,
+                 set_cards)
 end

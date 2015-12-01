@@ -35,6 +35,9 @@ function -(a::MassCG,b::MassCG)
     MassCG(mass,cg,inertia)
 end
 
+MassCG(card::CAERO1,model::NastranModel) = MassCG()
+MassCG(card::SPLINE1,model::NastranModel) = MassCG()
+MassCG(card::SPLINE2,model::NastranModel) = MassCG()
 MassCG(card::CELAS1,model::NastranModel) = MassCG()
 MassCG(card::CELAS2,model::NastranModel) = MassCG()
 MassCG(card::CBUSH,model::NastranModel) = MassCG()

@@ -82,3 +82,11 @@ function convert(::Type{PELAS},card)
     id = card[2]::Int64
     PELAS(id)
 end
+
+type PAERO1 <: PropertyCard
+    id::Int64
+end
+function convert(::Type{PAERO1},card)
+    id = card[2]::Int64
+    PAERO1(id)
+end
