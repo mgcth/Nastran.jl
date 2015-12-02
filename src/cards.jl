@@ -18,10 +18,10 @@ function convert(::Type{NastranCard},card::GenericCard)
     NastranCard(Val{symbol(card[1])},card)
 end
 
-export CELAS1,CELAS2,CROD,CBEAM,CBUSH,RBE2,RBE3,CTRIAR,CQUADR,CONM2,CAERO1,SPLINE1,SPLINE2
+export CELAS1,CELAS2,CROD,CBEAM,CBUSH,RBE2,RBE3,CTRIAR,CQUADR,CONM2,CAERO1,SPLINE1,SPLINE2,CHEXA
 include("element_cards.jl")
 
-export PBEAM,PSHELL,PROD,PELAS,PAERO1
+export PBEAM,PSHELL,PROD,PELAS,PAERO1,PSOLID
 include("property_cards.jl")
 
 export CORD1R,CORD2R

@@ -90,3 +90,11 @@ function convert(::Type{PAERO1},card)
     id = card[2]::Int64
     PAERO1(id)
 end
+
+type PSOLID <: PropertyCard
+    id::Int64
+end
+function convert(::Type{PSOLID},card)
+    id = card[2]::Int64
+    PSOLID(id)
+end

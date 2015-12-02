@@ -153,3 +153,52 @@ function convert(::Type{SPLINE2},card)
     id = card[2]::Int64
     SPLINE2(id)
 end
+
+type CHEXA <: ElementCard
+    id::Int64
+    prop_id::Int64
+    point1::Int64
+    point2::Int64
+    point3::Int64
+    point4::Int64
+    point5::Int64
+    point6::Int64
+    point7::Int64
+    point8::Int64
+    point9::Int64
+    point10::Int64
+    point11::Int64
+    point12::Int64
+    point13::Int64
+    point14::Int64
+    point15::Int64
+    point16::Int64
+    point17::Int64
+    point18::Int64
+    point19::Int64
+    point20::Int64
+end
+function convert(::Type{CHEXA},card)
+    CHEXA(card[2]::Int64,
+          card[3]::Int64,
+          card[4]::Int64,
+          card[5]::Int64,
+          card[6]::Int64,
+          card[7]::Int64,
+          card[8]::Int64,
+          card[9]::Int64,
+          card[10]::Int64,
+          card[11]::Int64,
+          card[12] == "" ? 0 : card[12]::Int64,
+          card[13] == "" ? 0 : card[13]::Int64,
+          card[14] == "" ? 0 : card[14]::Int64,
+          card[15] == "" ? 0 : card[15]::Int64,
+          card[16] == "" ? 0 : card[16]::Int64,
+          card[17] == "" ? 0 : card[17]::Int64,
+          length(card) < 18 || card[18] == "" ? 0 : card[18]::Int64,
+          length(card) < 18 || card[19] == "" ? 0 : card[19]::Int64,
+          length(card) < 18 || card[20] == "" ? 0 : card[20]::Int64,
+          length(card) < 18 || card[21] == "" ? 0 : card[21]::Int64,
+          length(card) < 18 || card[22] == "" ? 0 : card[22]::Int64,
+          length(card) < 18 || card[23] == "" ? 0 : card[23]::Int64)
+end
