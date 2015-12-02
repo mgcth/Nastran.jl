@@ -88,10 +88,11 @@ function MassCG(card::CQUADR,model::NastranModel)
     MassCG()
 end
 
+# http://docsdrive.com/pdfs/sciencepublications/jmssp/2005/8-11.pdf
 function masscg_from_tetra(points::NTuple{4,XYZ})
     cg = sum(points)/4
     vol = dot(cross(points[2] - points[1],points[3] - points[2]),points[4]-points[1])/6
-    delta = map(p -> p - cg,points)
+    delta = Array(hcat(map(p-> Array(p-cg),points)...))'
     I11 = 0.0
     I22 = 0.0
     I33 = 0.0
@@ -100,29 +101,29 @@ function masscg_from_tetra(points::NTuple{4,XYZ})
     I32 = 0.0
     for i in 1:4
         for j in i:4
-            I11 += delta[i][2]*delta[j][2] + delta[i][3]*delta[j][3]
-            I22 += delta[i][1]*delta[j][1] + delta[i][3]*delta[j][3]
-            I33 += delta[i][1]*delta[j][1] + delta[i][2]*delta[j][2]
+            I11 += delta[i,2]*delta[j,2] + delta[i,3]*delta[j,3]
+            I22 += delta[i,1]*delta[j,1] + delta[i,3]*delta[j,3]
+            I33 += delta[i,1]*delta[j,1] + delta[i,2]*delta[j,2]
         end
     end
     for i in 1:4
         for j in 1:4
             if i == j
-                I21 -= delta[i][1]*delta[j][2]
-                I31 -= delta[i][1]*delta[j][3]
-                I32 -= delta[i][2]*delta[j][3]
+                I21 -= delta[i,1]*delta[j,2]
+                I31 -= delta[i,1]*delta[j,3]
+                I32 -= delta[i,2]*delta[j,3]
             else
-                I21 -= delta[i][1]*delta[j][2]/2
-                I31 -= delta[i][1]*delta[j][3]/2
-                I32 -= delta[i][2]*delta[j][3]/2
+                I21 -= delta[i,1]*delta[j,2]/2
+                I31 -= delta[i,1]*delta[j,3]/2
+                I32 -= delta[i,2]*delta[j,3]/2
             end
         end
     end
     I = Mat3x3([
          I11 I21 I31;
          I21 I22 I32;
-         I31 I32 I33
-         ])*vol/10
+         I31 I32 I33;
+         ])*(vol/10)
     return MassCG(vol,cg,I)
 end
 
