@@ -95,32 +95,49 @@ immutable NastranCardIterator
     cards
 end
 
-Base.start(I::NastranCardIterator) = (nothing,start(I.cards))
+Base.start(I::NastranCardIterator) = (Dict{ASCIIString,GenericCard}(),start(I.cards))
 
 function Base.next(I::NastranCardIterator,state)
-    last_card, cards_state = state
+    cont_cards, cards_state = state
     while !done(I.cards,cards_state)
         card, cards_state = next(I.cards,cards_state)
         if all(f -> f == "",card)
-            if last_card != nothing
-                return (last_card,(nothing,cards_state))
+            if haskey(cont_cards,"+") && haskey(cont_cards,"")
+                c = pop!(cont_cards,"")
+                cont_cards[""] = pop!(cont_cards,"+")
+                return (c,(cont_cards,cards_state))
+            elseif haskey(cont_cards,"+")
+                cont_cards[""] = pop!(cont_cards,"+")
             end
         elseif card[1] == "+" || card[1] == ""
-            if last_card == nothing
+            if !haskey(cont_cards,"+")
+                @show card
+                @show cont_cards
                 error()
             end
-            append!(last_card,card[2:end-1])
+            append!(cont_cards["+"],card[2:end-1])
         else
-            if last_card == nothing
-                last_card = card[1:end-1]
-            else
-                return (last_card,(card[1:end-1],cards_state))
+            if haskey(cont_cards,"+") && haskey(cont_cards,"")
+                c = pop!(cont_cards,"")
+                cont_cards[""] = pop!(cont_cards,"+")
+                cont_cards["+"] = card[1:end-1]
+                return (c,(cont_cards,cards_state))
+            elseif haskey(cont_cards,"+")
+                cont_cards[""] = pop!(cont_cards,"+")
             end
+            cont_cards["+"] = card[1:end-1]
         end
     end
-    return (last_card,(nothing,cards_state))
+    if haskey(cont_cards,"")
+        c = pop!(cont_cards,"")
+        return (c,(cont_cards,cards_state))
+    end
+    if haskey(cont_cards,"+")
+        c = pop!(cont_cards,"+")
+        return (c,(cont_cards,cards_state))
+    end
 end
-Base.done(I::NastranCardIterator,state) = done(I.cards,state[2]) && state[1] == nothing
+Base.done(I::NastranCardIterator,state) = done(I.cards,state[2]) && length(state[1]) == 0
 
 function GenericNastranDeck(filename::AbstractString)
     cards = read_cards(filename)
