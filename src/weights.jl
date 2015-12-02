@@ -87,6 +87,88 @@ function MassCG(card::CQUADR,model::NastranModel)
     end
     MassCG()
 end
+
+function masscg_from_tetra(points::NTuple{4,XYZ})
+    cg = sum(points)/4
+    vol = dot(cross(points[2] - points[1],points[3] - points[2]),points[4]-points[1])/6
+    delta = map(p -> p - cg,points)
+    I11 = 0.0
+    I22 = 0.0
+    I33 = 0.0
+    I21 = 0.0
+    I31 = 0.0
+    I32 = 0.0
+    for i in 1:4
+        for j in i:4
+            I11 += delta[i][2]*delta[j][2] + delta[i][3]*delta[j][3]
+            I22 += delta[i][1]*delta[j][1] + delta[i][3]*delta[j][3]
+            I33 += delta[i][1]*delta[j][1] + delta[i][2]*delta[j][2]
+        end
+    end
+    for i in 1:4
+        for j in 1:4
+            if i == j
+                I21 -= delta[i][1]*delta[j][2]
+                I31 -= delta[i][1]*delta[j][3]
+                I32 -= delta[i][2]*delta[j][3]
+            else
+                I21 -= delta[i][1]*delta[j][2]/2
+                I31 -= delta[i][1]*delta[j][3]/2
+                I32 -= delta[i][2]*delta[j][3]/2
+            end
+        end
+    end
+    I = Mat3x3([
+         I11 I21 I31;
+         I21 I22 I32;
+         I31 I32 I33
+         ])*vol/10
+    return MassCG(vol,cg,I)
+end
+
+function masscg_from_pyramid(center::XYZ,points::XYZ...)
+    face_center = sum(points)/length(points)
+    mcg = MassCG()
+    for i in 1:length(points)
+        j = (i % length(points)) + 1
+        mcg += masscg_from_tetra((points[i],points[j],face_center,center))
+    end
+    mcg
+end
+
+function MassCG(card::CHEXA,model::NastranModel)
+    xyz1 = get_global_xyz(model,card.point1)
+    xyz2 = get_global_xyz(model,card.point2)
+    xyz3 = get_global_xyz(model,card.point3)
+    xyz4 = get_global_xyz(model,card.point4)
+    xyz5 = get_global_xyz(model,card.point5)
+    xyz6 = get_global_xyz(model,card.point6)
+    xyz7 = get_global_xyz(model,card.point7)
+    xyz8 = get_global_xyz(model,card.point8)
+    xyz9 = card.point9 == 0 ? (xyz1 + xyz2)/2 : get_global_xyz(model,card.point9)
+    xyz10 = card.point10 == 0 ? (xyz2 + xyz3)/2 : get_global_xyz(model,card.point10)
+    xyz11 = card.point11 == 0 ? (xyz3 + xyz4)/2 : get_global_xyz(model,card.point11)
+    xyz12 = card.point12 == 0 ? (xyz4 + xyz1)/2 : get_global_xyz(model,card.point12)
+    xyz13 = card.point13 == 0 ? (xyz1 + xyz5)/2 : get_global_xyz(model,card.point13)
+    xyz14 = card.point14 == 0 ? (xyz2 + xyz6)/2 : get_global_xyz(model,card.point14)
+    xyz15 = card.point15 == 0 ? (xyz3 + xyz7)/2 : get_global_xyz(model,card.point15)
+    xyz16 = card.point16 == 0 ? (xyz4 + xyz8)/2 : get_global_xyz(model,card.point16)
+    xyz17 = card.point17 == 0 ? (xyz5 + xyz6)/2 : get_global_xyz(model,card.point17)
+    xyz18 = card.point18 == 0 ? (xyz6 + xyz7)/2 : get_global_xyz(model,card.point18)
+    xyz19 = card.point19 == 0 ? (xyz7 + xyz8)/2 : get_global_xyz(model,card.point19)
+    xyz20 = card.point20 == 0 ? (xyz8 + xyz5)/2 : get_global_xyz(model,card.point20)
+
+    center = (xyz1 + xyz2 + xyz3 + xyz4 + xyz5 + xyz6 + xyz7 + xyz8)/8
+    mcg = MassCG()
+    mcg += masscg_from_pyramid(center,xyz1,xyz9,xyz2,xyz10,xyz3,xyz11,xyz4,xyz12)
+    mcg += masscg_from_pyramid(center,xyz20,xyz8,xyz19,xyz7,xyz18,xyz6,xyz17,xyz5)
+    mcg += masscg_from_pyramid(center,xyz1,xyz13,xyz5,xyz17,xyz6,xyz14,xyz2,xyz9)
+    mcg += masscg_from_pyramid(center,xyz2,xyz14,xyz6,xyz18,xyz7,xyz15,xyz3,xyz10)
+    mcg += masscg_from_pyramid(center,xyz3,xyz15,xyz7,xyz19,xyz8,xyz16,xyz4,xyz11)
+    mcg += masscg_from_pyramid(center,xyz4,xyz16,xyz8,xyz20,xyz5,xyz13,xyz1,xyz12)
+    mcg
+end
+
 function MassCG(card::CONM2,model::NastranModel)
     inertia = Mat3x3([
                         card.I11 card.I21 card.I31;
