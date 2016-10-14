@@ -2,7 +2,7 @@ typealias GenericNastranDeck Vector{GenericCard}
 typealias NastranDeck Vector{NastranCard}
 
 function next_token(line::IOBuffer,N::Int64)
-    token = ascii(readbytes(line,N))
+    token = String(read(line,N))
     n = length(token)
     i = searchindex(token,'\t')
     if i > 0
@@ -68,7 +68,7 @@ end
 isnastranfloat = r"^([+-]?[0-9]*(?:[0-9]\.|\.[0-9])[0-9]*)[dD]?([+-][0-9]+)$"
 isfloat = r"^([+-]?[0-9]*(?:[0-9]\.|\.[0-9])[0-9]*)(?:[eE]([+-][0-9]+))?$"
 isint = r"^(?:[+-][0-9]{1,7}|[0-9]{1,8})$"
-function parse_number(field::ASCIIString)
+function parse_number(field::String)
     m = match(isnastranfloat,field)
     if m != nothing
         parse(Float64,join(m.captures,"e"))
@@ -81,7 +81,7 @@ function parse_number(field::ASCIIString)
     end
 end
 
-function parse_numbers(card::Vector{ASCIIString})
+function parse_numbers(card::Vector{String})
     map(parse_number,card)
 end
 
@@ -95,7 +95,7 @@ immutable NastranCardIterator
     cards
 end
 
-Base.start(I::NastranCardIterator) = (Dict{ASCIIString,GenericCard}(),start(I.cards))
+Base.start(I::NastranCardIterator) = (Dict{String,GenericCard}(),start(I.cards))
 
 function Base.next(I::NastranCardIterator,state)
     cont_cards, cards_state = state
@@ -146,5 +146,9 @@ end
 
 function NastranDeck(filename::AbstractString)
     cards = read_cards(filename)
-    NastranDeck(collect(NastranCardIterator(cards)))
+    deck = []
+    for card in NastranCardIterator(cards)
+        push!(deck,card)
+    end
+    deck
 end
