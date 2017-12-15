@@ -1,5 +1,5 @@
 CoordinateSystemCardType = CardType{:coordinate_system}()
-typealias CoordinateSystemCard NastranCard{CoordinateSystemCardType}
+const CoordinateSystemCard = NastranCard{CoordinateSystemCardType}
 
 type CORD1R <: CoordinateSystemCard
     id::Int64

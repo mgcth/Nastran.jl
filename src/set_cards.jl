@@ -1,5 +1,5 @@
 SetCardType = CardType{:set}()
-typealias SetCard NastranCard{SetCardType}
+const SetCard = NastranCard{SetCardType}
 
 type AEFACT <: SetCard
     id::Int64

@@ -6,10 +6,10 @@ export GridCard, ElementCard, PropertyCard, CoordinateSystemCard, ConstraintCard
 
 import Base.convert
 
-abstract NastranCard{CardType}
-immutable CardType{T} end
+abstract type NastranCard{CardType} end
+struct CardType{T} end
 
-typealias GenericCard Vector{Any}
+const GenericCard = Vector{Any}
 @generated function NastranCard{U}(u::Type{Val{U}},card)
     return :(convert($U,card))
 end

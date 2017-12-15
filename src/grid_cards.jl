@@ -1,5 +1,5 @@
 GridCardType = CardType{:grid}()
-typealias GridCard NastranCard{GridCardType}
+const GridCard = NastranCard{GridCardType}
 
 type GRID <: GridCard
     id::Int64

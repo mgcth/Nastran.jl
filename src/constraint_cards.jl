@@ -1,5 +1,5 @@
 ConstraintCardType = CardType{:constraint}()
-typealias ConstraintCard NastranCard{ConstraintCardType}
+const ConstraintCard = NastranCard{ConstraintCardType}
 
 type MPC <: ConstraintCard
     id::Int64

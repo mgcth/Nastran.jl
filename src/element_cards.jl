@@ -1,5 +1,5 @@
 ElementCardType = CardType{:element}()
-typealias ElementCard NastranCard{ElementCardType}
+const ElementCard = NastranCard{ElementCardType}
 
 type CBEAM <: ElementCard
     id::Int64

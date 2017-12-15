@@ -1,5 +1,5 @@
-typealias GenericNastranDeck Vector{GenericCard}
-typealias NastranDeck Vector{NastranCard}
+const GenericNastranDeck = Vector{GenericCard}
+const NastranDeck = Vector{NastranCard}
 
 function next_token(line::IOBuffer,N::Int64)
     token = String(read(line,N))

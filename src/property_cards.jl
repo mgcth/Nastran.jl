@@ -1,5 +1,5 @@
 PropertyCardType = CardType{:property}()
-typealias PropertyCard NastranCard{PropertyCardType}
+const PropertyCard = NastranCard{PropertyCardType}
 
 type PSHELL <: PropertyCard id::Int64
     mat1_id::Int64

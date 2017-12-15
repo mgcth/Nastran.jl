@@ -1,5 +1,5 @@
 MaterialCardType = CardType{:material}()
-typealias MaterialCard NastranCard{MaterialCardType}
+const MaterialCard = NastranCard{MaterialCardType}
 
 type MAT1 <: MaterialCard
     id::Int64
