@@ -148,9 +148,11 @@ end
 
 function NastranDeck(filename::AbstractString)
     cards = read_cards(filename)
-    deck = []
+    deck = NastranDeck()
+    i = 1
     for card in NastranCardIterator(cards)
         push!(deck,card)
+        i = i + 1;
     end
     deck
 end

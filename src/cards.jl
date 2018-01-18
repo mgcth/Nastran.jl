@@ -15,7 +15,7 @@ const GenericCard = Vector{Any}
 end
 
 function convert(::Type{NastranCard},card::GenericCard)
-    NastranCard(Val{symbol(card[1])},card)
+    NastranCard(Val{Symbol(card[1])},card) # symbol() deprecated
 end
 
 export CELAS1,CELAS2,CROD,CBEAM,CBUSH,RBE2,RBE3,CTRIAR,CQUADR,CONM2,CAERO1,SPLINE1,SPLINE2,CHEXA

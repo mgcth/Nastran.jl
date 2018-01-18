@@ -34,6 +34,7 @@ function convert(::Type{CTRIAR},card)
     end
     CTRIAR(id,prop_id,thickness1,thickness2,thickness3)
 end
+const CTRIA3 = CTRIAR;
 
 type CQUADR <: ElementCard
     id::Int64
@@ -44,6 +45,8 @@ function convert(::Type{CQUADR},card)
     prop_id = card[3]::Int64
     CQUADR(id,prop_id)
 end
+const CQUAD4 = CQUADR;
+const CTETRA = CQUADR;
 
 type CROD <: ElementCard
     id::Int64
@@ -54,6 +57,7 @@ function convert(::Type{CROD},card)
     prop_id = card[3] == "" ? id : card[3]::Int64
     CROD(id,prop_id)
 end
+const CBAR = CROD;
 
 type CBUSH <: ElementCard
     id::Int64
