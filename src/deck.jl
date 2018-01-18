@@ -59,9 +59,9 @@ end
 function remove_comments(line::AbstractString)
     i = searchindex(line,'$')
     if i == 0
-        line
+        String(line) # Otherwise SubString problem further down
     else
-        line[1:i-1]
+        String(line[1:i-1]) # Otherwise SubString problem further down
     end
 end
 
@@ -100,6 +100,7 @@ Base.start(I::NastranCardIterator) = (Dict{String,GenericCard}(),start(I.cards))
 function Base.next(I::NastranCardIterator,state)
     cont_cards, cards_state = state
     while !done(I.cards,cards_state)
+        #@show cont_cards
         card, cards_state = next(I.cards,cards_state)
         if all(f -> f == "",card)
             if haskey(cont_cards,"+") && haskey(cont_cards,"")
@@ -113,7 +114,8 @@ function Base.next(I::NastranCardIterator,state)
             if !haskey(cont_cards,"+")
                 @show card
                 @show cont_cards
-                error()
+                @show cards_state
+                #error()
             end
             append!(cont_cards["+"],card[2:end-1])
         else
