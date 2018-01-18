@@ -3,7 +3,7 @@ function card_dict{C<:NastranCard}(::Type{C},deck::NastranDeck)
         (card.id,card)
     end)
 end
-#
+
 # type Grid
 #     id::Int64
 #     csys_id::Int64
