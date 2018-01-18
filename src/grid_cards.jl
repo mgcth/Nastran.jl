@@ -1,6 +1,6 @@
 GridCardType = CardType{:grid}()
 const GridCard = NastranCard{GridCardType}
-#
+
 type GRID <: GridCard
     id::Int64
     csys_id::Int64
