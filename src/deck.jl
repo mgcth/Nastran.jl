@@ -114,7 +114,7 @@ function Base.next(I::NastranCardIterator,state)
                 @show card
                 @show cont_cards
                 @show cards_state
-                #error()
+                error()
             end
             @show card[2:end-1]
             @show typeof(cont_cards)
