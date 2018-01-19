@@ -116,6 +116,9 @@ function Base.next(I::NastranCardIterator,state)
                 @show cards_state
                 #error()
             end
+            @show card[2:end-1]
+            @show typeof(cont_cards)
+            @show cont_cards["+"]
             append!(cont_cards["+"],card[2:end-1])
         else
             if haskey(cont_cards,"+") && haskey(cont_cards,"")

@@ -99,5 +99,5 @@ function convert(::Type{PSOLID},card)
     PSOLID(id)
 end
 
-# for now, proper property later
+# for now, correct property later
 const PBARL = PBUSH
