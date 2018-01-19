@@ -86,7 +86,7 @@ function parse_numbers(card::Vector{String})
 end
 
 function read_cards(filename::AbstractString)
-    map(eachline(open(filename))) do line
+    a = map(eachline(open(filename))) do line
         line |> chomp |> remove_comments |> parse_line |> parse_numbers
     end
 end
@@ -100,7 +100,6 @@ Base.start(I::NastranCardIterator) = (Dict{String,GenericCard}(),start(I.cards))
 function Base.next(I::NastranCardIterator,state)
     cont_cards, cards_state = state
     while !done(I.cards,cards_state)
-        #@show cont_cards
         card, cards_state = next(I.cards,cards_state)
         if all(f -> f == "",card)
             if haskey(cont_cards,"+") && haskey(cont_cards,"")
@@ -149,10 +148,8 @@ end
 function NastranDeck(filename::AbstractString)
     cards = read_cards(filename)
     deck = NastranDeck()
-    i = 1
     for card in NastranCardIterator(cards)
         push!(deck,card)
-        i = i + 1;
     end
     deck
 end

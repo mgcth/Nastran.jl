@@ -98,3 +98,6 @@ function convert(::Type{PSOLID},card)
     id = card[2]::Int64
     PSOLID(id)
 end
+
+# for now, proper property later
+const PBARL = PBUSH

@@ -18,7 +18,7 @@ function convert(::Type{NastranCard},card::GenericCard)
     NastranCard(Val{Symbol(card[1])},card) # symbol() deprecated
 end
 
-export CELAS1,CELAS2,CROD,CBEAM,CBUSH,RBE2,RBE3,CTRIAR,CQUADR,CONM2,CAERO1,SPLINE1,SPLINE2,CHEXA
+export CELAS1,CELAS2,CROD,CBEAM,CBUSH,RBE2,RBE3,CTRIAR,CQUADR,CONM2,CAERO1,SPLINE1,SPLINE2,CHEXA,PBARL
 include("element_cards.jl")
 
 export PBEAM,PSHELL,PROD,PELAS,PAERO1,PSOLID
