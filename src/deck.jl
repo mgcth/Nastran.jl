@@ -91,16 +91,21 @@ function read_cards(filename::AbstractString)
     end
 end
 
-immutable NastranCardIterator
+struct NastranCardIterator
     cards
 end
 
-Base.start(I::NastranCardIterator) = (Dict{String,GenericCard}(),start(I.cards))
-
+function Base.start(I::NastranCardIterator)
+    (Dict{String,GenericCard}(),start(I.cards))
+end
 function Base.next(I::NastranCardIterator,state)
+    #@show state
     cont_cards, cards_state = state
+    #@show cont_cards
     while !done(I.cards,cards_state)
         card, cards_state = next(I.cards,cards_state)
+        #@show cards_state
+        #@show card
         if all(f -> f == "",card)
             if haskey(cont_cards,"+") && haskey(cont_cards,"")
                 c = pop!(cont_cards,"")
@@ -111,14 +116,8 @@ function Base.next(I::NastranCardIterator,state)
             end
         elseif card[1] == "+" || card[1] == ""
             if !haskey(cont_cards,"+")
-                @show card
-                @show cont_cards
-                @show cards_state
-                #error()
+                cont_cards["+"] = pop!(cont_cards,"")
             end
-            @show card[2:end-1]
-            @show typeof(cont_cards)
-            @show cont_cards["+"]
             append!(cont_cards["+"],card[2:end-1])
         else
             if haskey(cont_cards,"+") && haskey(cont_cards,"")
@@ -131,6 +130,8 @@ function Base.next(I::NastranCardIterator,state)
             end
             cont_cards["+"] = card[1:end-1]
         end
+        #@show cont_cards
+        #println("")
     end
     if haskey(cont_cards,"")
         c = pop!(cont_cards,"")
