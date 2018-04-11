@@ -1,4 +1,3 @@
-
 module Cards
 
 export NastranCard, GenericCard

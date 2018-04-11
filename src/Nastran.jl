@@ -11,7 +11,7 @@ export MassCG, XYZ, Mat3x3
 const XYZ = SVector{3,Float64}
 const Mat3x3 = SMatrix{3,3,Float64}
 
-include("cards.jl")
+include("cards/Cards.jl")
 using .Cards
 
 include("deck.jl")
