@@ -14,25 +14,32 @@ end
 type CTRIAR <: ElementCard
     id::Int64
     prop_id::Int64
-    thickness1::Nullable{Float64}
-    thickness2::Nullable{Float64}
-    thickness3::Nullable{Float64}
+    g1::Int64
+    g2::Int64
+    g3::Int64
+    t1::Nullable{Float64}
+    t2::Nullable{Float64}
+    t3::Nullable{Float64}
 end
 function convert(::Type{CTRIAR},card)
     id = card[2]::Int64
     prop_id = card[3] == "" ? id : card[3]::Int64
     tflag = 0
-    thickness1 = nothing
-    thickness2 = nothing
-    thickness3 = nothing
+    g1 = card[4] == "" ? nothing : card[4]::Int64
+    g2 = card[5] == "" ? nothing : card[5]::Int64
+    g3 = card[6] == "" ? nothing : card[6]::Int64
+    t1 = nothing
+    t2 = nothing
+    t3 = nothing
+    @show card
     if length(card) > 10
         tflag = card[11] == "" ? 0 : card[11]::Int64
-        thickness1 = card[12] == "" ? nothing : card[12]::Float64
-        thickness2 = card[13] == "" ? nothing : card[13]::Float64
-        thickness3 = card[14] == "" ? nothing : card[14]::Float64
+        t1 = card[12] == "" ? nothing : card[12]::Float64
+        t2 = card[13] == "" ? nothing : card[13]::Float64
+        t3 = card[14] == "" ? nothing : card[14]::Float64
     else
     end
-    CTRIAR(id,prop_id,thickness1,thickness2,thickness3)
+    CTRIAR(id,prop_id,g1,g2,g3,t1,t2,t3)
 end
 const CTRIA3 = CTRIAR;
 
