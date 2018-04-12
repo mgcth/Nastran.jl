@@ -5,10 +5,11 @@ type CBEAM <: ElementCard
     id::Int64
     prop_id::Int64
 end
-function convert(::Type{CBEAM},card)
+function convert(::Type{CBEAM}, card)
     id = card[2]::Int64
     prop_id = card[3]::Int64
-    CBEAM(id,prop_id)
+
+    CBEAM(id, prop_id)
 end
 
 type CTRIAR <: ElementCard
@@ -21,39 +22,111 @@ type CTRIAR <: ElementCard
     t2::Nullable{Float64}
     t3::Nullable{Float64}
 end
-function convert(::Type{CTRIAR},card)
+function convert(::Type{CTRIAR}, card)
+    tflag = 0
+
     id = card[2]::Int64
     prop_id = card[3] == "" ? id : card[3]::Int64
-    tflag = 0
     g1 = card[4] == "" ? nothing : card[4]::Int64
     g2 = card[5] == "" ? nothing : card[5]::Int64
     g3 = card[6] == "" ? nothing : card[6]::Int64
+
     t1 = nothing
     t2 = nothing
     t3 = nothing
-    @show card
+
     if length(card) > 10
         tflag = card[11] == "" ? 0 : card[11]::Int64
         t1 = card[12] == "" ? nothing : card[12]::Float64
         t2 = card[13] == "" ? nothing : card[13]::Float64
         t3 = card[14] == "" ? nothing : card[14]::Float64
-    else
     end
-    CTRIAR(id,prop_id,g1,g2,g3,t1,t2,t3)
+
+    CTRIAR(id, prop_id, g1, g2, g3, t1, t2, t3)
 end
 const CTRIA3 = CTRIAR;
 
 type CQUADR <: ElementCard
     id::Int64
     prop_id::Int64
+    g1::Int64
+    g2::Int64
+    g3::Int64
+    g4::Int64
+    t1::Nullable{Float64}
+    t2::Nullable{Float64}
+    t3::Nullable{Float64}
+    t4::Nullable{Float64}
 end
-function convert(::Type{CQUADR},card)
+function convert(::Type{CQUADR}, card)
+    tflag = 0
+
     id = card[2]::Int64
     prop_id = card[3]::Int64
-    CQUADR(id,prop_id)
+    g1 = card[4] == "" ? nothing : card[4]::Int64
+    g2 = card[5] == "" ? nothing : card[5]::Int64
+    g3 = card[6] == "" ? nothing : card[6]::Int64
+    g4 = card[7] == "" ? nothing : card[7]::Int64
+
+    t1 = nothing
+    t2 = nothing
+    t3 = nothing
+    t4 = nothing
+
+    if length(card) > 10
+        tflag = card[11] == "" ? 0 : card[11]::Int64
+        t1 = card[12] == "" ? nothing : card[12]::Float64
+        t2 = card[13] == "" ? nothing : card[13]::Float64
+        t3 = card[14] == "" ? nothing : card[14]::Float64
+        t4 = card[15] == "" ? nothing : card[15]::Float64
+    end
+
+    CQUADR(id, prop_id, g1, g2, g3, g4, t1, t2, t3, t4)
 end
 const CQUAD4 = CQUADR;
-const CTETRA = CQUADR;
+
+#const CTETRA = CQUADR;
+type CTETRA <: ElementCard
+    id::Int64
+    prop_id::Int64
+    g1::Int64
+    g2::Int64
+    g3::Int64
+    g4::Int64
+    g5::Nullable{Int64}
+    g6::Nullable{Int64}
+    g7::Nullable{Int64}
+    g8::Nullable{Int64}
+    g9::Nullable{Int64}
+    g10::Nullable{Int64}
+end
+function convert(::Type{CTETRA}, card)
+    tflag = 0
+
+    id = card[2]::Int64
+    prop_id = card[3]::Int64
+    g1 = card[4] == "" ? nothing : card[4]::Int64
+    g2 = card[5] == "" ? nothing : card[5]::Int64
+    g3 = card[6] == "" ? nothing : card[6]::Int64
+    g4 = card[7] == "" ? nothing : card[7]::Int64
+    g5 = card[8] == "" ? nothing : card[8]::Int64
+    g6 = card[9] == "" ? nothing : card[9]::Int64
+
+    g7 = nothing
+    g8 = nothing
+    g9 = nothing
+    g10 = nothing
+
+    if length(card) > 10
+        tflag = card[11] == "" ? 0 : card[11]::Int64
+        g7 = card[12] == "" ? nothing : card[12]::Int64
+        g8 = card[13] == "" ? nothing : card[13]::Int64
+        g9 = card[14] == "" ? nothing : card[14]::Int64
+        g10 = card[15] == "" ? nothing : card[15]::Int64
+    end
+
+    CTETRA(id, prop_id, g1, g2, g3, g4, g5, g6, g7, g8, g9, g10)
+end
 
 type CROD <: ElementCard
     id::Int64
