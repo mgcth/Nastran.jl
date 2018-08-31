@@ -1,4 +1,7 @@
 *.jl.cov
 *.jl.*.cov
 *.jl.mem
-.DS_store
+Manifest.toml
+
+# System files
+.DS_Store
